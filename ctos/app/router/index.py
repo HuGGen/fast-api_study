@@ -24,7 +24,7 @@ async def create(name: str, session: Session = Depends(db.session)):
 
 @router.get("/test/read/{id}", status_code=200)
 async def read(id: str, session: Session = Depends(db.session)):
-    rslt_arr = Test().read(id=id)
+    rslt_arr = Test().read(id=id, session=session)
     return Response(f"""{rslt_arr}""")
 
 
@@ -44,6 +44,6 @@ async def delete(value: str, session: Session = Depends(db.session)):
     return Response(f"""{all_data}""")
 
 @router.get("/", status_code=200)
-async def index(session: Session = Depends(db.session)):
+async def index():
     all_data = str(Test().all_columns()).replace(", Col", "\nCol")
     return Response(f"""{all_data}""")

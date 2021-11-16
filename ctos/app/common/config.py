@@ -13,12 +13,12 @@ class Config:
     DB_ECHO: bool = True
     DEBUG: bool = False
     TEST_MODE: bool = False
-    DB_URL: str = environ.get("DB_URL", "postgresql://pgadmin:pgadmin@192.168.56.1:5432/postgres")
+    DB_URL: str = environ.get("DB_URL", "postgresql://pgadmin:pgadmin@112.172.32.14:5432/postgres")
 
 @dataclass
 class LocalConfig(Config):
-    TRUSTED_HOSTS = ["*"]
-    ALLOW_SITE = ["*"]
+    TRUSTED_HOSTS = ["*"] # 접속 도메인 제한
+    ALLOW_SITE    = ["*"]
     PROJ_RELOAD: bool = True
 
 @dataclass

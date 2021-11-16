@@ -1,4 +1,8 @@
-from enum import Enum
+from fastapi import APIRouter
 
-from pydantic.main import BaseModel
 
+router = APIRouter()
+
+@router.get("/auth", status_code=200)
+async def create():
+    return "Hello World!"

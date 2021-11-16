@@ -30,16 +30,17 @@ class BaseMixin:
         return hash(self.id)
 
     @classmethod
-    def create(cls, session: Session, auto_commit=False, **kwargs):
+    def create(cls, session: Session = None, auto_commit=False, **kwargs):
         obj = cls()
+        sess = next(db.session()) if not session else session
         columns =  obj.all_columns()
         for col in kwargs:
             if col in columns:
                 setattr(obj, col, kwargs.get(col))
-        session.add(obj)
-        session.flush()
+        sess.add(obj)
+        sess.flush()
         if auto_commit:
-            session.commit()
+            sess.commit()
         return obj
 
     @classmethod
@@ -71,9 +72,9 @@ class BaseMixin:
             if key in columns:
                 col = getattr(cls, key)
                 query = query.update({key : val})
-        session.flush()
+        sess.flush()
         if auto_commit:
-            session.commit()
+            sess.commit()
         return query
 
     @classmethod
@@ -88,9 +89,9 @@ class BaseMixin:
                 query = query.filter(col == val)
         query = query.delete()
 
-        session.flush()
+        sess.flush()
         if auto_commit:
-            session.commit()
+            sess.commit()
         return query
 
 class Test(Base, BaseMixin):
