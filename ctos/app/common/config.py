@@ -13,7 +13,7 @@ class Config:
     DB_ECHO: bool = True
     DEBUG: bool = False
     TEST_MODE: bool = False
-    DB_URL: str = environ.get("DB_URL", "postgresql://pgadmin:pgadmin@112.172.32.14:5432/postgres")
+    DB_URL: str = environ.get("DB_URL", "postgresql://postgres:postgres@132.226.20.151:5432/postgres")
 
 @dataclass
 class LocalConfig(Config):
