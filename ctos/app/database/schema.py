@@ -11,8 +11,6 @@ from sqlalchemy import(
 
 from sqlalchemy.orm import Session
 from app.database.conn import Base, db
-import json
-from fastapi.encoders import jsonable_encoder
 
 class BaseMixin:
     id = Column(Text, primary_key=True)
@@ -44,7 +42,7 @@ class BaseMixin:
         return obj
 
     @classmethod
-    def read(cls, session: Session = None, **kwargs):
+    def read_one(cls, session: Session = None, **kwargs):
         obj = cls()
         columns = obj.all_columns()
         sess = next(db.session()) if not session else session
@@ -53,10 +51,25 @@ class BaseMixin:
             if key in columns:
                 col = getattr(cls, key)
                 query = query.filter(col == val)
+        result = query.first()
+        if not session:
+            sess.close()
+        return result
+
+    @classmethod
+    def read(cls, session: Session = None, **kwargs):
+        obj = cls()
+        columns = obj.all_columns()
+        sess = next(db.session()) if not session else session
+        query = sess.query(cls)
+        # for key, val in kwargs.items():
+        #     if key in columns:
+        #         col = getattr(cls, key)
+        #         query = query.filter(col == val)
         result = query.all()
         if not session:
             sess.close()
-        return jsonable_encoder(result)
+        return result
 
     @classmethod
     def update(cls, session: Session = None, auto_commit=False, **kwargs):

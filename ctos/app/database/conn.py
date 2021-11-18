@@ -23,9 +23,10 @@ class SQLAlchemy:
           , pool_pre_ping=True
         )
 
-        self._session = sessionmaker(autocommit=False
-                                , autoflush=False
-                                , bind=self._engine)
+        self._session = sessionmaker(
+            autocommit=False
+          , autoflush=False
+          , bind=self._engine)
         
         @app.on_event("startup")
         def startup():

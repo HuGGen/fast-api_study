@@ -6,26 +6,35 @@ from starlette.responses import Response
 
 from app.database.conn import db
 from app.database.schema import Test
+from app import models as m
 
+from app.errors import exceptions as ex
+from starlette.requests import Request
+from fastapi.exceptions import HTTPException
 
 router = APIRouter()
 
 @router.get("/test/create/{name}", status_code=200)
 async def create(name: str, session: Session = Depends(db.session)):
-    rslt = Test().create(session
-                  , auto_commit=True
-                  , id=name
-                  , value=8000
-                  , err_txt="have no error")
+    rslt = Test().create(
+        session
+      , auto_commit=True
+      , id=name
+      , value=8000
+      , err_txt="have no error")
     current_time = datetime.utcnow()
-
-    print(rslt)
     return Response(f"""CTOS (UTC: {current_time.strftime('%Y-%m-%d %H:%M:%S')}""")
 
-@router.get("/test/read/{id}", status_code=200)
+@router.get("/test/read/{id}", status_code=200, response_model=m.testMe)
 async def read(id: str, session: Session = Depends(db.session)):
-    rslt_arr = Test().read(id=id, session=session)
-    return Response(f"""{rslt_arr}""")
+    rslt_arr = Test().read_one(id=id, session=session)
+    return rslt_arr
+
+@router.get("/test/read", status_code=200)#, response_model=list[m.testMe])
+async def read(request: Request, session: Session = Depends(db.session)):
+    rslt_arr = Test().read(session=session)
+    raise ex.NoKeyMatchEx
+    return rslt_arr
 
 
 @router.get("/test/update/{name}", status_code=200)
