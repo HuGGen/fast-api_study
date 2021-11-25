@@ -13,6 +13,8 @@ class Config:
     DB_ECHO: bool = True
     DEBUG: bool = False
     TEST_MODE: bool = False
+    #API_KEY = "32461860-81f0-4f70-b0ef-2acaec73-36ba-41a2-ab9b-6a412329ed9f"
+    #SECRET_KEY = "ZtQccLoDRDzGnosdgymFl9u0lxN9L3iExvzxhuIk"
 
 @dataclass
 class LocalConfig(Config):

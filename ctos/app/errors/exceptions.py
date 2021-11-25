@@ -38,6 +38,7 @@ class SqlFailureEx(APIException):
         )
 
 
+
 class TestEx(APIException):
     def __init__(self, ex: Exception = None):
         super().__init__(
@@ -55,5 +56,15 @@ class NoKeyMatchEx(APIException):
             msg=f"해당 키에 대한 권한이 없거나 해당 키가 없습니다.",
             detail="No Keys Matched",
             code=f"{StatusCode.HTTP_404}{'3'.zfill(4)}",
+            ex=ex,
+        )
+
+class APIQueryStringEx(APIException):
+    def __init__(self, ex: Exception = None):
+        super().__init__(
+            status_code=StatusCode.HTTP_400,
+            msg=f"쿼리스트링은 key, timestamp 2개만 허용되며, 2개 모두 요청시 제출되어야 합니다.",
+            detail="Query String Only Accept key and timestamp.",
+            code=f"{StatusCode.HTTP_400}{'7'.zfill(4)}",
             ex=ex,
         )

@@ -13,7 +13,8 @@ from app.middlewares.token_validator import access_control
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.cors import CORSMiddleware
 from app.middlewares.trusted_hosts import TrustedHostMiddleware
-from app.middlewares.basemiddleware import CheckApiKey
+from starlette.middleware.gzip import GZipMiddleware
+
 
 def create_app():
     com_conf = conf()
@@ -21,10 +22,10 @@ def create_app():
     conf_dict = asdict(com_conf)
     db.init_app(app, **conf_dict)
 
-    app.add_middleware(CheckApiKey)
-    #app.add_middleware(middleware_class=BaseHTTPMiddleware, dispatch=access_control)
-    app.add_middleware(CORSMiddleware, **conf().CORS_OPTIONS)
-    app.add_middleware(TrustedHostMiddleware, **conf().TRUSTED_HOSTS_OPTIONS)
+    app.add_middleware(middleware_class=BaseHTTPMiddleware, dispatch=access_control)
+    app.add_middleware(CORSMiddleware, **com_conf.CORS_OPTIONS)
+    app.add_middleware(TrustedHostMiddleware, **com_conf.TRUSTED_HOSTS_OPTIONS)
+    app.add_middleware(GZipMiddleware, minimum_size=1000)
 
     app.include_router(index.router)
     app.include_router(auth.router, prefix="/api", tags=["users"])
